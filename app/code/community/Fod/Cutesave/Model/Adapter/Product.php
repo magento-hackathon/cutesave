@@ -17,32 +17,54 @@ class Fod_Cutesave_Model_Adapter_Product extends Mage_ImportExport_Model_Import_
         return Mage::getSingleton('fod_cutesave/queue');
     }
 
+    /**
+     * @param $code
+     * @return Mage_Catalog_Model_Resource_Eav_Attribute
+     */
+    protected function getAttribute($code) {
+        static $cache;
+        if ( !isset( $cache[ $code ] ) ) {
+
+            $attribute = Mage::getSingleton('eav/config')->getAttribute('catalog_product', $code);
+            $cache[ $code ] = $attribute;
+
+        }
+
+        return $cache[ $code ];
+    }
+
     public function convert( Mage_Catalog_Model_Product $_item ) {
+
+        /* @var $_item  Mage_Catalog_Model_Product */
 
         // _store	_attribute_set	_type	_category	_product_websites
 
-
         $data = array();
 
-        foreach(  $_item->getData() AS $k => $v ) {
-            if ( ( is_string( $v ) || is_numeric( $v ) ) && !in_array( $k, $this->_attributeBlacklist ) ) {
+        foreach( $_item->getData() AS $k => $v ) {
 
-                $data[ $k ] = $v;
+            $attribute = $this->getAttribute( $k );
+            if ( $attribute->getId() ) {
+
+                die( get_class( $attribute ) );
+
+                //switch( $attribute-> )
 
             }
+
         }
 
-        $data['_store'] = '';
-        $data['_attribute_set'] = 'Default';
-        $data['_type'] = 'simple';
-        $data['_category'] = '';
-        $data['_product_websites'] = 'base';
+        $data['_store'] = $_item->getStoreIds();
+        $data['_attribute_set'] = $_item->getAttributeSetId();
+        $data['_type'] = $_item->getTypeId();
+        $data['_category'] = $_item->getCategoryIds();
+        $data['_product_websites'] = $_item->getWebsiteIds();
 
-
-        print_r( $data );
+        print_( $data );
 
         return $data;
     }
+
 
     public function getData() {
         $result = array();

@@ -1,9 +1,9 @@
 <?php
 
-require dirname(__FILE__).'/../../../../../Mage.php';
+require '/home/tobias/www/foocamp/app/Mage.php';
 Mage::app('admin');
 
-for($i=0; $i<= 5000; $i++) {
+for($i=0; $i<= 1; $i++) {
 
     $product = Mage::getModel('catalog/product');
     $product->setStoreId(0);
