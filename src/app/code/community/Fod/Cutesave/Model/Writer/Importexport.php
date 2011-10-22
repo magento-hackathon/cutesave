@@ -26,6 +26,51 @@ class Fod_Cutesave_Model_Writer_Importexport extends Mage_ImportExport_Model_Imp
     
    
     /**
+     * Initialize attribute sets code-to-id pairs.
+     *
+     * @return Mage_ImportExport_Model_Import_Entity_Product
+     */
+    protected function _initAttributeSets()
+    {
+        foreach (Mage::getResourceModel('eav/entity_attribute_set_collection')
+                ->setEntityTypeFilter($this->_entityTypeId) as $attributeSet) {
+            $this->_attrSetNameToId[$attributeSet->getId()] = $attributeSet->getId();
+            $this->_attrSetIdToName[$attributeSet->getId()] = $attributeSet->getAttributeSetName();
+        }
+        return $this;
+    }
+    
+    /**
+     * Initialize categories text-path to ID hash.
+     *
+     * @return Mage_ImportExport_Model_Import_Entity_Product
+     */
+    protected function _initCategories()
+    {
+        $collection = Mage::getResourceModel('catalog/category_collection');
+        /* @var $collection Mage_Catalog_Model_Resource_Eav_Mysql4_Category_Collection */
+        foreach ($collection as $category) {
+        	$this->_categories[$category->getId()] = $category->getId();
+        }
+        return $this;
+    }    
+    
+    /**
+     * Initialize website values.
+     *
+     * @return Mage_ImportExport_Model_Import_Entity_Product
+     */
+    protected function _initWebsites()
+    {
+        /** @var $website Mage_Core_Model_Website */
+        foreach (Mage::app()->getWebsites() as $website) {
+            $this->_websiteCodeToId[$website->getId()] = $website->getId();
+            $this->_websiteCodeToStoreIds[$website->getCode()] = array_flip($website->getStoreCodes());
+        }
+        return $this;
+    }    
+    
+    /**
     * Validate data rows and save bunches to DB.
     *
     * @return Mage_ImportExport_Model_Import_Entity_Abstract
