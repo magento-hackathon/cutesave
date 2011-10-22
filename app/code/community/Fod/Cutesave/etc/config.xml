@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Fod_Cutesave>
+            <version>0.9.0.0</version>
+        </Fod_Cutesave>
+    </modules>
+
+    <global>
+
+        <models>
+            <fod_cutesave>
+                <class>Fod_Cutesave_Model</class>
+            </fod_cutesave>
+        </models>
+
+        <events>
+            <catalog_product_save_before>
+                <observers>
+                    <fod_cutesave_catalog_product_save>
+                        <class>fod_cutesave/observer</class>
+                        <method>catalogProductSaveBefore</method>
+                    </fod_cutesave_catalog_product_save>
+                </observers>
+            </catalog_product_save_before>
+        </events>
+
+    </global>
+
+</config>
