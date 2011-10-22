@@ -19,6 +19,7 @@ class Fod_Cutesave_Model_Writer_Importexport extends Mage_ImportExport_Model_Imp
     
     public function saveItems($data)
     {
+        print_r( $data );
         $this->_dataCount = count($data);
         $this->_dataSourceModel->setDataBunch($data);
         return $this->_importData();
