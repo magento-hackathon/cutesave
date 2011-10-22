@@ -35,23 +35,16 @@ class Fod_Cutesave_Model_Adapter_Product extends Mage_ImportExport_Model_Import_
 
     public function convert( Mage_Catalog_Model_Product $_item ) {
 
-        /* @var $_item  Mage_Catalog_Model_Product */
-
-        // _store	_attribute_set	_type	_category	_product_websites
+        $rows = array();
 
         $data = array();
 
-        foreach( $_item->getData() AS $k => $v ) {
+        foreach(  $_item->getData() AS $k => $v ) {
+            if ( ( is_string( $v ) || is_numeric( $v ) ) && !in_array( $k, $this->_attributeBlacklist ) ) {
 
-            $attribute = $this->getAttribute( $k );
-            if ( $attribute->getId() ) {
-
-                die( get_class( $attribute ) );
-
-                //switch( $attribute-> )
+                $data[ $k ] = $v;
 
             }
-
         }
 
         $data['_store'] = $_item->getStoreIds();
@@ -60,9 +53,11 @@ class Fod_Cutesave_Model_Adapter_Product extends Mage_ImportExport_Model_Import_
         $data['_category'] = $_item->getCategoryIds();
         $data['_product_websites'] = $_item->getWebsiteIds();
 
-        print_( $data );
+        $rows[] = $data;
 
-        return $data;
+        // TODO: add some magic containing images and options
+        
+        return $rows;
     }
 
 
@@ -70,10 +65,11 @@ class Fod_Cutesave_Model_Adapter_Product extends Mage_ImportExport_Model_Import_
         $result = array();
         foreach( $this->_getQueue()->getItems() AS $_item ) {
             if ( $_item instanceof Mage_Catalog_Model_Product  ) {
-                $result[] = $this->convert( $_item );
+                foreach( $this->convert( $_item ) AS $_row ) {
+                    $result[] = $_row;
+                }
             }
         }
-
         return $result;
     }
 
