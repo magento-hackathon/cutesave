@@ -14,17 +14,6 @@
             </fod_cutesave>
         </models>
 
-        <events>
-            <catalog_product_save_before>
-                <observers>
-                    <fod_cutesave_catalog_product_save>
-                        <class>fod_cutesave/observer</class>
-                        <method>catalogProductSaveBefore</method>
-                    </fod_cutesave_catalog_product_save>
-                </observers>
-            </catalog_product_save_before>
-        </events>
-
     </global>
 
 </config>
