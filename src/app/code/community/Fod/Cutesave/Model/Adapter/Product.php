@@ -9,6 +9,34 @@ class Fod_Cutesave_Model_Adapter_Product extends Mage_ImportExport_Model_Import_
         'msrp_enabled',
         'msrp_display_actual_price_type'
     );
+    
+    protected $_baseStructureArray = array(
+    	'_store' => '',
+    	'_attribute_set' => '',
+     	'_type' => '',
+    	'sku' => '',
+    	'_product_websites' => ''
+    );
+    
+    protected $_dataRows = array();
+    
+    protected $_attrSetIdToName = null;
+    
+    /**
+     * Initialize attribute sets code-to-id pairs.
+     *
+     * @return Mage_ImportExport_Model_Import_Entity_Product
+     */
+    protected function _getAttributesetNamebyId($id)
+    {
+    	if($this->_attrSetIdToName === null){
+	        foreach (Mage::getResourceModel('eav/entity_attribute_set_collection')
+	                ->setEntityTypeFilter($this->_entityTypeId) as $attributeSet) {
+	            $this->_attrSetIdToName[$attributeSet->getCode()] = $attributeSet->getId();
+	        }
+    	}
+        return isset($this->_attrSetIdToName[$id]) ? $this->_attrSetIdToName[$id] : '';
+    }    
 
     /**
      * @return Fod_CuteSave_Model_Product_Queue
@@ -33,44 +61,61 @@ class Fod_Cutesave_Model_Adapter_Product extends Mage_ImportExport_Model_Import_
         return $cache[ $code ];
     }
 
-    public function convert( Mage_Catalog_Model_Product $_item ) {
+    public function convert( Mage_Catalog_Model_Product $product ) {
 
-        $rows = array();
+        $data = array();    
+        $data['_store'] = $product->getStoreIds();
+        $data['_attribute_set'] = $this->_getAttributesetNamebyId($product->getAttributeSetId());
+        $data['_type'] = $product->getTypeId();
+        $data['_product_websites'] = $product->getWebsiteIds();
 
-        $data = array();
-
-        foreach(  $_item->getData() AS $k => $v ) {
+        foreach(   $product->getData() AS $k => $v ) {
             if ( ( is_string( $v ) || is_numeric( $v ) ) && !in_array( $k, $this->_attributeBlacklist ) ) {
 
                 $data[ $k ] = $v;
 
             }
-        }
-
-        $data['_store'] = $_item->getStoreIds();
-        $data['_attribute_set'] = $_item->getAttributeSetId();
-        $data['_type'] = $_item->getTypeId();
-        $data['_category'] = $_item->getCategoryIds();
-        $data['_product_websites'] = $_item->getWebsiteIds();
-
-        $rows[] = $data;
-
-        // TODO: add some magic containing images and options
+        }         
         
-        return $rows;
-    }
+        
+        $this->_addRow($data, $product);
+        $this->setCategoryIds($product);
 
+        
+        // TODO: add some magic containing images and options
+        return $this->_dataRows;
+    }
+    
+
+    
+    protected function setCategoryIds($product){
+    	$_categories = $product->getCategoryIds();
+    	if(is_array($_categories) && count($_categories)){
+        	foreach ($_categories as $categoryId){
+        		$data = array();
+        		$data['_category'] = $categoryId;
+        		$this->_addRow($data, $product);
+        	}
+        }    	
+    }
+    
+    protected function _addRow($data, $product){
+    	$this->_baseStructureArray['_type'] = $product->getTypeId();
+    	$this->_baseStructureArray['_attribute_set'] = $this->_getAttributesetNamebyId($product->getAttributeSetId());
+    	$data = array_merge($this->_baseStructureArray, $data);
+    	
+    	$this->_dataRows[] = $data;
+    }
+    
 
     public function getData() {
         $result = array();
         foreach( $this->_getQueue()->getItems() AS $_item ) {
             if ( $_item instanceof Mage_Catalog_Model_Product  ) {
-                foreach( $this->convert( $_item ) AS $_row ) {
-                    $result[] = $_row;
-                }
+                $this->convert( $_item );
             }
         }
-        return $result;
+        return $this->_dataRows;
     }
 
     

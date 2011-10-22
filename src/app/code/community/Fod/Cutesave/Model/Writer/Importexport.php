@@ -25,21 +25,6 @@ class Fod_Cutesave_Model_Writer_Importexport extends Mage_ImportExport_Model_Imp
         return $this->_importData();
     }
     
-   
-    /**
-     * Initialize attribute sets code-to-id pairs.
-     *
-     * @return Mage_ImportExport_Model_Import_Entity_Product
-     */
-    protected function _initAttributeSets()
-    {
-        foreach (Mage::getResourceModel('eav/entity_attribute_set_collection')
-                ->setEntityTypeFilter($this->_entityTypeId) as $attributeSet) {
-            $this->_attrSetNameToId[$attributeSet->getId()] = $attributeSet->getId();
-            $this->_attrSetIdToName[$attributeSet->getId()] = $attributeSet->getAttributeSetName();
-        }
-        return $this;
-    }
     
     /**
      * Initialize categories text-path to ID hash.
