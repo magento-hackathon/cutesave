@@ -63,7 +63,7 @@ class Fod_Cutesave_Model_Adapter_Product extends Mage_ImportExport_Model_Import_
 
     public function convert( Mage_Catalog_Model_Product $product ) {
 
-        $data = array();    
+        $data = $product->getStockData();    
         $data['_store'] = $product->getStoreIds();
         $data['_attribute_set'] = $this->_getAttributesetNamebyId($product->getAttributeSetId());
         $data['_type'] = $product->getTypeId();
@@ -71,22 +71,25 @@ class Fod_Cutesave_Model_Adapter_Product extends Mage_ImportExport_Model_Import_
 
         foreach(   $product->getData() AS $k => $v ) {
             if ( ( is_string( $v ) || is_numeric( $v ) ) && !in_array( $k, $this->_attributeBlacklist ) ) {
-
                 $data[ $k ] = $v;
-
             }
         }         
         
         
         $this->_addRow($data, $product);
-        $this->setCategoryIds($product);
+        //$this->setCategoryIds($product);
+        //$this->setStockData($product);
 
         
         // TODO: add some magic containing images and options
         return $this->_dataRows;
     }
     
-
+	protected function setStockData($product){
+	    if(is_array($product->getStockData())){
+        	$this->_addRow($product->getStockData(), $product);
+        }		
+	}
     
     protected function setCategoryIds($product){
     	$_categories = $product->getCategoryIds();
