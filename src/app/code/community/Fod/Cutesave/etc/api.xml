@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<config>
+    <api>
+        <resources>
+            <cutesave_product>
+                <model>fod_cutesave/api_product</model>
+                <title>Product API</title>
+                <acl>cutesave/product</acl>
+                <methods>
+                    <create>
+                        <title>Create new product</title>
+                        <acl>cutesave/product/create</acl>
+                    </create>
+                    
+                    <update>
+                        <title>update product</title>
+                        <acl>cutesave/product/update</acl>
+                    </update>
+                </methods>
+            </cutesave_product>
+        </resources>
+        <!--<v2>
+            <resources_function_prefix>
+                <country>directoryCountry</country>
+                <region>directoryRegion</region>
+            </resources_function_prefix>
+        </v2>-->
+        <acl>
+            <resources>
+                <cutesave_product>
+                    <title>Cutesave</title>
+                    <sort_order>10</sort_order>
+                    <create>
+                        <title>Create Cutesave Product</title>
+                    </create>
+                    <update>
+                        <title>Update Cutesave Product</title>
+                    </update>
+                </cutesave_product>
+            </resources>
+        </acl>
+    </api>
+</config>
