@@ -4,15 +4,7 @@ class Fod_Cutesave_Model_Writer_Importexport_Data extends Mage_ImportExport_Mode
 
     protected $_dataBunch = null;
 
-    /**
-    * Retrieve an external iterator
-    *
-    * @return IteratorIterator
-    */
-    public function getIterator ()
-    {
-        return new IteratorIterator($this->_stmt);
-    }
+
 
     public function setDataBunch($data = array())
     {
@@ -68,6 +60,20 @@ class Fod_Cutesave_Model_Writer_Importexport_Data extends Mage_ImportExport_Mode
         return $dataRow;
     }
 
+ 
+    
+    
+    /**
+     * Retrieve an external iterator
+     *
+     * @return IteratorIterator
+     */
+    public function getIterator()
+    {
+        return new ArrayIterator($this->_dataBunch);
+    }    
+    
+    
     /**
     * Save import rows bunch.
     *
