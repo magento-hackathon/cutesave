@@ -113,12 +113,10 @@ class Fod_Cutesave_Model_Writer_Importexport extends Mage_ImportExport_Model_Imp
     }
 
 
-         /**
-     * Uploading files into the "catalog/product" media folder.
-     * Return a new file name if the same file is already exists.
+   /**
+     * Override for the Option to set the Temp Directory
      *
      * @param string $fileName
-     * @param string $fileDirectory
      * @return string
      */
     protected function _uploadMediaFiles($fileName)
