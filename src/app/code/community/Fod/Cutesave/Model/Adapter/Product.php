@@ -87,7 +87,7 @@ class Fod_Cutesave_Model_Adapter_Product extends Mage_ImportExport_Model_Import_
         //$this->setImages($product);
 
         if ( $product->getTypeId() == 'configurable') {
-            $this->setConfigurableProducts();
+            $this->setConfigurableProducts( $product );
         }
 
         // TODO: add some magic containing images and options
