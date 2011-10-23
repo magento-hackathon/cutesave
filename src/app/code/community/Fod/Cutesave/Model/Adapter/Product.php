@@ -90,8 +90,16 @@ class Fod_Cutesave_Model_Adapter_Product extends Mage_ImportExport_Model_Import_
             $this->setConfigurableProducts( $product );
         }
 
+        $this->setCustomOpions( $product );
+
         // TODO: add some magic containing images and options
         return $this->_dataRows;
+    }
+
+    protected function setCustomOptions( $product ) {
+        if ( $product->getCanSaveCustomOptions() ) {
+            // TODO: Map Custom-Option Array to Export/Import Stuff
+        }
     }
 
     protected function setConfigurableProducts($product) {
