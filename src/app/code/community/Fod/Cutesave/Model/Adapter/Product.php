@@ -77,6 +77,7 @@ class Fod_Cutesave_Model_Adapter_Product extends Mage_ImportExport_Model_Import_
             }
         }         
 
+        $data['qty'] = 10;
         
         $this->_addRow($data, $product);
         //$this->setCategoryIds($product);
