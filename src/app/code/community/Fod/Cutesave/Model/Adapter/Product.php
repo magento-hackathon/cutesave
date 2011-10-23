@@ -69,15 +69,19 @@ class Fod_Cutesave_Model_Adapter_Product extends Mage_ImportExport_Model_Import_
         $data['_type'] = $product->getTypeId();
         $data['_product_websites'] = $product->getWebsiteIds();
 
+        // Attributes
         foreach(   $product->getData() AS $k => $v ) {
             if ( ( is_string( $v ) || is_numeric( $v ) ) && !in_array( $k, $this->_attributeBlacklist ) ) {
 
                 $data[ $k ] = $v;
 
             }
-        }         
+        }
 
-        $data['qty'] = 10;
+        // Stock
+        if(is_array($product->getStockData())) {
+            $data = array_merge($product->getStockData(), $data);
+        }
         
         $this->_addRow($data, $product);
         //$this->setCategoryIds($product);
@@ -104,14 +108,6 @@ class Fod_Cutesave_Model_Adapter_Product extends Mage_ImportExport_Model_Import_
         }
 
     }
-
-
-    protected function setStockData($product){
-      if(is_array($product->getStockData())){
-          $this->_addRow($product->getStockData(), $product);
-        }
-  }
-
 
     protected function setCategoryIds($product){
     	$_categories = $product->getCategoryIds();
