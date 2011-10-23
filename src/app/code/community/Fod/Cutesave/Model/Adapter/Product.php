@@ -80,6 +80,7 @@ class Fod_Cutesave_Model_Adapter_Product extends Mage_ImportExport_Model_Import_
         
         $this->_addRow($data, $product);
         //$this->setCategoryIds($product);
+        //$this->setStockData($product);
         //$this->setImages($product);
 
         // TODO: add some magic containing images and options
@@ -102,6 +103,13 @@ class Fod_Cutesave_Model_Adapter_Product extends Mage_ImportExport_Model_Import_
         }
 
     }
+
+
+    protected function setStockData($product){
+      if(is_array($product->getStockData())){
+          $this->_addRow($product->getStockData(), $product);
+        }
+  }
 
 
     protected function setCategoryIds($product){
