@@ -121,15 +121,27 @@ class Fod_Cutesave_Model_Adapter_Product extends Mage_ImportExport_Model_Import_
     	$data = array_merge($this->_baseStructureArray, $data);
     	
     	$this->_dataRows[] = $data;
-    }
-    
 
-    public function getData() {
-        $result = array();
+
+    }
+
+
+    protected function _preparedData() {
         foreach( $this->_getQueue()->getItems() AS $_item ) {
             if ( $_item instanceof Mage_Catalog_Model_Product  ) {
                 $this->convert( $_item );
             }
+        }
+        return $this;
+    }
+
+    public function resetData() {
+        $this->_dataRows = array();
+    }
+
+    public function getData() {
+        if ( !count( $this->_dataRows ) ) {
+            $this->_preparedData();
         }
         return $this->_dataRows;
     }
