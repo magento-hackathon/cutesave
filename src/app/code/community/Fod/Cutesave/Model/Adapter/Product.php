@@ -1,7 +1,8 @@
 <?php
 
-class Fod_Cutesave_Model_Adapter_Product extends Mage_ImportExport_Model_Import_Entity_Product {
+class Fod_Cutesave_Model_Adapter_Product{
 
+    protected $_entityTypeId = 'product';
     protected $_attributeBlacklist = array(
         'entity_type_id',
         'attribute_set_id',
