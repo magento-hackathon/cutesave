@@ -1,8 +1,7 @@
 <?php
 
-class Fod_Cutesave_Model_Adapter_Product{
+class Fod_Cutesave_Model_Adapter_Product extends Mage_ImportExport_Model_Import_Entity_Product{
 
-    protected $_entityTypeId = 'product';
     protected $_attributeBlacklist = array(
         'entity_type_id',
         'attribute_set_id',
@@ -62,6 +61,10 @@ class Fod_Cutesave_Model_Adapter_Product{
         return $cache[ $code ];
     }
 
+    /**
+     * @param Mage_Catalog_Model_Product $product
+     * @return array
+     */
     public function convert( Mage_Catalog_Model_Product $product ) {
         $data = array();
         $data['_store'] = $product->getStoreIds();
@@ -90,8 +93,8 @@ class Fod_Cutesave_Model_Adapter_Product{
 
 
         $this->_addRow($data, $product);
-        //$this->setCategoryIds($product);
-        //$this->setStockData($product);
+        $this->setCategoryIds($product);
+        $this->setStockData($product);
         $this->setImages($product);
 
         if ( $product->getTypeId() == 'configurable') {
@@ -100,7 +103,6 @@ class Fod_Cutesave_Model_Adapter_Product{
 
         $this->setCustomOptions( $product );
 
-        // TODO: add some magic containing images and options
         return $this->_dataRows;
     }
     
@@ -165,7 +167,7 @@ class Fod_Cutesave_Model_Adapter_Product{
         }
     }
 
-    protected function setConfigurableProducts($product) {
+    protected function setConfigurableProducts(Mage_Catalog_Model_Product $product) {
         if ( $product->getTypeId() != 'configurable') {
             return false;
         }
@@ -187,16 +189,24 @@ class Fod_Cutesave_Model_Adapter_Product{
 
     }
 
-    protected function setImages($product){
+    /**
+     * Fuer jedes Bild was importiert werden soll wird
+     * eine zusaetzliche Zeile hinzugefuegt ohne jedoch
+     * die SKU oder andere Attribute zu setzen
+     *
+     * @param Mage_Catalog_Model_Product $product
+     * @return void
+     */
+    protected function setImages( Mage_Catalog_Model_Product $product){
         $arr_images = $product->getMediaGallery('images');
-
+        $attribute = $product->getResource()->getAttribute('media_gallery');
         foreach($arr_images as $image)
         {
             $imagedata = array('_media_image' =>  $image['file'],
                                 '_media_is_disabled' =>$image['disabled'],
                                 '_media_position' => $image['position'],
                                 '_media_lable' => $image['label'],
-                                '_media_attribute_id' => 703,
+                                '_media_attribute_id' => $attribute->getAttributeId(),
 
             );
             $this->_addRow($imagedata, $product);
@@ -204,15 +214,21 @@ class Fod_Cutesave_Model_Adapter_Product{
 
     }
 
-
-    protected function setStockData($product){
+    /**
+     * @param Mage_Catalog_Model_Product $product
+     * @return void
+     */
+    protected function setStockData(Mage_Catalog_Model_Product $product){
       if(is_array($product->getStockData())){
           $this->_addRow($product->getStockData(), $product);
         }
   }
 
-
-    protected function setCategoryIds($product){
+    /**
+     * @param Mage_Catalog_Model_Product $product
+     * @return void
+     */
+    protected function setCategoryIds(Mage_Catalog_Model_Product $product){
     	$_categories = $product->getCategoryIds();
     	if(is_array($_categories) && count($_categories)){
         	foreach ($_categories as $categoryId){
@@ -223,7 +239,12 @@ class Fod_Cutesave_Model_Adapter_Product{
         }    	
     }
     
-    protected function _addRow($data, $product){
+    /**
+     * @param $data
+     * @param Mage_Catalog_Model_Product $product
+     * @return void
+     */
+    protected function _addRow($data, Mage_Catalog_Model_Product $product){
     	$this->_baseStructureArray['_type'] = $product->getTypeId();
     	$this->_baseStructureArray['_attribute_set'] = $this->_getAttributesetNamebyId($product->getAttributeSetId());
     	$data = array_merge($this->_baseStructureArray, $data);
