@@ -65,7 +65,7 @@ class Fod_Cutesave_Model_Adapter_Product{
     public function convert( Mage_Catalog_Model_Product $product ) {
         $data = array();
         $data['_store'] = $product->getStoreIds();
-        $data['_attribute_set'] = $this->_getAttributesetNamebyId($product->getAttributeSetId());
+        $data['_attribute_set'] = 'Default'; //$this->_getAttributesetNamebyId($product->getAttributeSetId());
         $data['_type'] = $product->getTypeId();
         $data['_product_websites'] = $product->getWebsiteIds();
 
