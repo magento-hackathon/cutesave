@@ -2,6 +2,8 @@
 
 class Fod_Cutesave_Model_Writer_Importexport extends Mage_ImportExport_Model_Import_Entity_Product {
 
+    protected $_fileDirectory = null;
+
     /**
     * Constructor.
     *
@@ -14,6 +16,8 @@ class Fod_Cutesave_Model_Writer_Importexport extends Mage_ImportExport_Model_Imp
         $this->_entityTypeId = $entityType->getEntityTypeId();
         $this->_dataSourceModel = self::getDataSourceModel();
         $this->_connection = Mage::getSingleton('core/resource')->getConnection('write');
+        $this->_fileDirectory = Mage::getBaseDir('media') .DS. 'tmp/catalog/product/';
+                
     }
     
     
@@ -106,6 +110,29 @@ class Fod_Cutesave_Model_Writer_Importexport extends Mage_ImportExport_Model_Imp
         
         Mage::log(' Product ('.$sku.') Import Error: '.$errorCode.' '.$colName);
         return parent::addRowError($errorCode, $errorRowNum, $colName);
+    }
+
+
+         /**
+     * Uploading files into the "catalog/product" media folder.
+     * Return a new file name if the same file is already exists.
+     *
+     * @param string $fileName
+     * @param string $fileDirectory
+     * @return string
+     */
+    protected function _uploadMediaFiles($fileName)
+    {
+        if($this->_fileDirectory){
+            $this->_getUploader()->setTmpDir($this->_fileDirectory);
+        }
+
+        try {
+            $res = $this->_getUploader()->move($fileName);
+            return $res['file'];
+        } catch (Exception $e) {
+            return '';
+        }
     }
     
 
