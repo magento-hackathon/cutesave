@@ -4,37 +4,14 @@ class Fod_Cutesave_Model_Api_Product extends Mage_Catalog_Model_Product_Api {
     
     public function update($productId, $productData, $store = null, $identifierType = null)
     {
-        $product = $this->_getProduct($productId, $store, $identifierType);
+        $product = Mage::getModel('catalog/product');
         
         foreach($productData as $k => $v) {
             $product->setData($k, $v);
         }
 
-        try {
-            /**
-             * @todo implement full validation process with errors returning which are ignoring now
-             * @todo see Mage_Catalog_Model_Product::validate()
-             */
-            if (is_array($errors = $product->validate())) {
-                $strErrors = array();
-                foreach($errors as $code => $error) {
-                    if ($error === true) {
-                        $error = Mage::helper('catalog')->__('Value for "%s" is invalid.', $code);
-                    } else {
-                        $error = Mage::helper('catalog')->__('Value for "%s" is invalid: %s', $code, $error);
-                    }
-                    $strErrors[] = $error;
-                }
-                
-                $this->_fault('data_invalid', implode("\n", $strErrors));
-            }
-
-            //$product->save();
-            Mage::getSingleton('fod_cutesave/queue')->add($product);
-            Mage::getSingleton('fod_cutesave/queue')->write();
-        } catch (Mage_Core_Exception $e) {
-            $this->_fault('data_invalid', $e->getMessage());
-        }
+        Mage::getSingleton('fod_cutesave/queue')->add($product);
+        Mage::getSingleton('fod_cutesave/queue')->write();
 
         return true;
     }
