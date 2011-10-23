@@ -15,7 +15,7 @@ class Fod_Cutesave_Model_Adapter_Product extends Mage_ImportExport_Model_Import_
     	'_attribute_set' => '',
      	'_type' => '',
     	'sku' => '',
-    	'_product_websites' => ''
+    	'_product_websites' => '',
     );
     
     protected $_dataRows = array();
@@ -63,7 +63,7 @@ class Fod_Cutesave_Model_Adapter_Product extends Mage_ImportExport_Model_Import_
 
     public function convert( Mage_Catalog_Model_Product $product ) {
 
-        $data = $product->getStockData();    
+        $data = array();    
         $data['_store'] = $product->getStoreIds();
         $data['_attribute_set'] = $this->_getAttributesetNamebyId($product->getAttributeSetId());
         $data['_type'] = $product->getTypeId();
@@ -71,26 +71,39 @@ class Fod_Cutesave_Model_Adapter_Product extends Mage_ImportExport_Model_Import_
 
         foreach(   $product->getData() AS $k => $v ) {
             if ( ( is_string( $v ) || is_numeric( $v ) ) && !in_array( $k, $this->_attributeBlacklist ) ) {
+
                 $data[ $k ] = $v;
+
             }
         }         
-        
+
         
         $this->_addRow($data, $product);
         //$this->setCategoryIds($product);
-        //$this->setStockData($product);
+        //$this->setImages($product);
 
-        
         // TODO: add some magic containing images and options
         return $this->_dataRows;
     }
     
-	protected function setStockData($product){
-	    if(is_array($product->getStockData())){
-        	$this->_addRow($product->getStockData(), $product);
-        }		
-	}
-    
+
+    protected function setImages($product){
+        $arr_images = $product->getMediaGalleryImages();
+        foreach($arr_images as $image)
+        {
+            $imagedata = array('_media_image' => $image->getFile(),
+                                '_media_is_disabled' =>$image->getDisabled(),
+                                '_media_position' => $image->getPosition(),
+                                '_media_lable' => $image->getLabel(),
+                                '_media_attribute_id' => 703
+            );
+            $this->_addRow($imagedata, $product);
+            //$this->_copyImage($image->getFile());
+        }
+
+    }
+
+
     protected function setCategoryIds($product){
     	$_categories = $product->getCategoryIds();
     	if(is_array($_categories) && count($_categories)){
