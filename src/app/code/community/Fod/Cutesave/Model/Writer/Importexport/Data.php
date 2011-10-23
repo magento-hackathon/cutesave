@@ -52,6 +52,8 @@ class Fod_Cutesave_Model_Writer_Importexport_Data extends Mage_ImportExport_Mode
     */
     public function getNextBunch()
     {
+        // TODO: Generate small bunches (in some cases)
+
         static $_i;
         $_i++;
         if ( $_i  % 2 != 0 ) {
