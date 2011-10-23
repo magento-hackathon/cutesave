@@ -61,9 +61,8 @@ class Fod_Cutesave_Model_Adapter_Product extends Mage_ImportExport_Model_Import_
         return $cache[ $code ];
     }
 
-    public function convert( Mage_Catalog_Model_Product $product ) {
+    public function convert( Mage_Catalog_Model_Product $product, $data = array() ) {
 
-        $data = array();    
         $data['_store'] = $product->getStoreIds();
         $data['_attribute_set'] = $this->_getAttributesetNamebyId($product->getAttributeSetId());
         $data['_type'] = $product->getTypeId();
@@ -84,14 +83,46 @@ class Fod_Cutesave_Model_Adapter_Product extends Mage_ImportExport_Model_Import_
         }
         
         $this->_addRow($data, $product);
-        //$this->setCategoryIds($product);
-        //$this->setStockData($product);
+        $this->setCategoryIds($product);
         //$this->setImages($product);
+
+        if ( $product->getTypeId() == 'configurable') {
+            $this->setConfigurableProducts( $product );
+        }
+
+        $this->setCustomOpions( $product );
 
         // TODO: add some magic containing images and options
         return $this->_dataRows;
     }
-    
+
+    protected function setCustomOptions( $product ) {
+        if ( $product->getCanSaveCustomOptions() ) {
+            // TODO: Map Custom-Option Array to Export/Import Stuff
+        }
+    }
+
+    protected function setConfigurableProducts($product) {
+        if ( $product->getTypeId() != 'configurable') {
+            return false;
+        }
+
+        $base = array();
+        $base['_super_products_sku'] = '';
+        $base['_super_attribute_code'] = '';
+        $base['_super_attribute_option'] = '';
+        $base['_super_attribute_price_corr'] = '';
+
+        /**
+         *  prüfen aus welchen attributen configurable products besteht
+         *  alle simple abrufen
+         *      - je simple mittels convert 1:n rows
+         *      - row mit _super* initialisieren
+         *
+         */
+        
+
+    }
 
     protected function setImages($product){
         $arr_images = $product->getMediaGalleryImages();
