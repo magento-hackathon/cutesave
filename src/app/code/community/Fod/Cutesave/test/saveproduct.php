@@ -1,12 +1,12 @@
 <?php
 
-// require dirname(__FILE__).'/../../../../../Mage.php';
-require '/home/tobias/www/foocamp/app/Mage.php';
+require dirname(__FILE__).'/../../../../../Mage.php';
+//require '/home/tobias/www/foocamp/app/Mage.php';
 Mage::app('admin');
 
 for($i=0; $i<= 50; $i++) {
 
-$product = Mage::getModel('catalog/product')->load( 6 );
+$product = Mage::getModel('catalog/product');
 $product->setStoreId(0);
 $product->setWebsiteId(1);
 $product->setData('sku', 'z' . $i);
