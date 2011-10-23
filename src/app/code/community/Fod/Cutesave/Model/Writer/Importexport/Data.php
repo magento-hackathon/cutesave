@@ -4,11 +4,10 @@ class Fod_Cutesave_Model_Writer_Importexport_Data extends Mage_ImportExport_Mode
 
     protected $_dataBunch = null;
 
-
-
     public function setDataBunch($data = array())
     {
         $this->_dataBunch = $data;
+        $this->_iterator = null;
         return $this;
     }
 
@@ -52,19 +51,21 @@ class Fod_Cutesave_Model_Writer_Importexport_Data extends Mage_ImportExport_Mode
     */
     public function getNextBunch()
     {
-        // TODO: Generate small bunches (in some cases)
-
-        static $_i;
-        $_i++;
-        if ( $_i  % 2 != 0 ) {
-            return null;
+        if (null === $this->_iterator) {
+            $this->_iterator = $this->getIterator();
+            $this->_iterator->rewind();
         }
-        return $this->_dataBunch;
+        if ($this->_iterator->valid()) {
+            $dataRow = $this->_iterator->current();
+            $this->_iterator->next();
+        } else {
+            $this->_iterator = null;
+            $dataRow = null;
+        }
+        return $dataRow;
     }
 
- 
-    
-    
+
     /**
      * Retrieve an external iterator
      *
@@ -72,7 +73,8 @@ class Fod_Cutesave_Model_Writer_Importexport_Data extends Mage_ImportExport_Mode
      */
     public function getIterator()
     {
-        return new ArrayIterator($this->_dataBunch);
+        // TODO: generates smaller bunches
+        return new ArrayIterator( array($this->_dataBunch) );
     }    
     
     
