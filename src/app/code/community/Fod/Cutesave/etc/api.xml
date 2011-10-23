@@ -16,6 +16,11 @@
                         <title>update product</title>
                         <acl>cutesave/product/update</acl>
                     </update>
+                    
+                    <multiwrite>
+                        <title>Multiwrite</title>
+                        <acl>cutesave/product/multiwrite</acl>
+                    </multiwrite>
                 </methods>
             </cutesave_product>
         </resources>
@@ -36,6 +41,9 @@
                     <update>
                         <title>Update Cutesave Product</title>
                     </update>
+                    <multiwrite>
+                        <titel>Multiwrite</titel>
+                    </multiwrite>
                 </cutesave_product>
             </resources>
         </acl>

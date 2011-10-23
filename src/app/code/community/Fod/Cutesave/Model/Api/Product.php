@@ -93,4 +93,16 @@ class Fod_Cutesave_Model_Api_Product extends Mage_Catalog_Model_Product_Api {
         }
     }
 
+    public function multiwrite($data) {
+        foreach($data as $productData) {
+            $product = Mage::getModel('catalog/product');
+            /** @var Mage_Catalog_Model_Product $product */
+            
+            $this->_prepareDataForSave($product, $productData);
+            
+            Mage::getSingleton('fod_cutesave/queue')->add($product);
+        }
+        
+        Mage::getSingleton('fod_cutesave/queue')->write();
+    }
 }
