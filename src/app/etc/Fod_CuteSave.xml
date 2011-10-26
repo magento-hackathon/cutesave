@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <config>
     <modules>
         <Fod_Cutesave>
@@ -7,6 +6,7 @@
             <codePool>community</codePool>
             <depends>
                 <Mage_Catalog />
+                <Mage_ImportExport />
             </depends>
         </Fod_Cutesave>
     </modules>    

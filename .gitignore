@@ -1,2 +1,8 @@
-.project
-.vagrant
+/build.properties
+/.buildpath
+/.settings
+/.externalToolBuilders
+/.project
+/cache.properties
+/.DS_Store
+/.vagrant
