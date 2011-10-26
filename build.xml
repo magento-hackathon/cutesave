@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Fod_Cutesave" default="deploy" basedir=".">
+
+    <property file="${basedir}/build.properties" />
+    <property file="${basedir}/build.default.properties" />
+
+    <property name="srcdir" value="${basedir}/src"/>
+    <property name="targetdir" value="${dev.local.deployDir}"/>
+
+    <target name="deploy">
+        <copy todir="${targetdir}" overwrite="yes" verbose="yes">
+            <fileset dir="src/">
+                <modified>
+                 <param name="cache.cachefile" value="dev.cache.properties"/>
+                </modified>
+                <exclude name="**/.svn" />
+            </fileset>
+        </copy>
+    </target>
+</project>
