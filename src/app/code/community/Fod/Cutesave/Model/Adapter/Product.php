@@ -74,11 +74,8 @@ class Fod_Cutesave_Model_Adapter_Product extends Mage_ImportExport_Model_Import_
     public function convert(Mage_Catalog_Model_Product $product)
     {
         $data = array();
-        $data['_store'] = $product->getStoreIds();
         $data['_attribute_set'] = $this->_getAttributesetNamebyId($product->getAttributeSetId());
         $data['_type'] = $product->getTypeId();
-        $data['_product_websites'] = $product->getWebsiteIds();
-
         // Attributes
         foreach ($product->getData() AS $k => $v) {
             if ((is_string($v) || is_numeric($v)) && !in_array($k, $this->_attributeBlacklist)) {
@@ -235,12 +232,23 @@ class Fod_Cutesave_Model_Adapter_Product extends Mage_ImportExport_Model_Import_
      *
      * @return void
      */
-    protected function _addRow($data, Mage_Catalog_Model_Product $product){
-    	$this->_baseStructureArray['_type'] = $product->getTypeId();
-    	$this->_baseStructureArray['_attribute_set'] = $this->_getAttributesetNamebyId($product->getAttributeSetId());
-    	$data = array_merge($this->_baseStructureArray, $data);
-    	
-    	$this->_dataRows[] = $data;
+    protected function _addRow($data, Mage_Catalog_Model_Product $product)
+    {
+        $this->_baseStructureArray['_type'] = $product->getTypeId();
+        $this->_baseStructureArray['_attribute_set'] = $this->_getAttributesetNamebyId($product->getAttributeSetId());
+        $data = array_merge($this->_baseStructureArray, $data);
+
+        foreach ($product->getStoreIds() as $storesId) {
+            $data['_store'] = Mage::app()->getStore($storesId)->getCode();
+            $this->_dataRows[] = $data;
+            unset($data['sku']);
+        }
+        foreach ($product->getWebsiteIds() as $websiteId) {
+            $nextLine = $this->_baseStructureArray;
+            $nextLine['_product_websites'] = $websiteId;
+            $this->_dataRows[] = $nextLine;
+        }
+
     }
 
 
