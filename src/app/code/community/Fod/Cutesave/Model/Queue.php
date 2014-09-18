@@ -1,6 +1,7 @@
 <?php
 
-class Fod_Cutesave_Model_Queue {
+class Fod_Cutesave_Model_Queue
+{
 
     protected $_items = Array();
 
@@ -12,12 +13,14 @@ class Fod_Cutesave_Model_Queue {
 
     protected $_enabled = true;
 
-    public function __construct() {
-        $this->setWriter( Mage::getModel('fod_cutesave/writer_importexport') );
-        $this->setAdapter( Mage::getModel('fod_cutesave/adapter_product') );
+    public function __construct()
+    {
+        $this->setWriter(Mage::getModel('fod_cutesave/writer_importexport'));
+        $this->setAdapter(Mage::getModel('fod_cutesave/adapter_product'));
     }
 
-    public function setWriter( Fod_Cutesave_Model_Writer_Importexport $writer  ) {
+    public function setWriter(Fod_Cutesave_Model_Writer_Importexport $writer)
+    {
         $this->_writer = $writer;
         return $this;
     }
@@ -25,11 +28,13 @@ class Fod_Cutesave_Model_Queue {
     /**
      * @return Fod_CuteSave_Model_Writer_Importexport
      */
-    public function getWriter() {
+    public function getWriter()
+    {
         return $this->_writer;
     }
 
-    public function setAdapter( Fod_Cutesave_Model_Adapter_Product $adapter  ) {
+    public function setAdapter(Fod_Cutesave_Model_Adapter_Product $adapter)
+    {
         $this->_adapter = $adapter;
         return $this;
     }
@@ -37,32 +42,40 @@ class Fod_Cutesave_Model_Queue {
     /**
      * @return Fod_CuteSave_Model_Writer_Importexport
      */
-    public function getAdapter() {
+    public function getAdapter()
+    {
         return $this->_adapter;
     }
 
-    public function add( /*Mage_Eav_Model_Entity_Interface*/ $item  ) {
-        Mage::log('FOD:ADD' . $item->getId() );
+    public function add($item)
+    {
+        Mage::log('FOD:ADD ' . $item->getSku());
         $this->_items[] = $item;
         return $this;
     }
 
-    public function getItems() {
+    public function getItems()
+    {
         return $this->_items;
     }
 
-    public function setEnabled( $bool = true ) {
+    public function setEnabled($bool = true)
+    {
         $this->_enabled = $bool;
         return $this;
     }
 
-    public function getEnabled() {
+    public function getEnabled()
+    {
         return $this->_enabled;
     }
 
-    public function write() {
+    public function write()
+    {
+        Mage::log('Writing queue.');
         $data = $this->getAdapter()->getData();
-        $this->getWriter()->saveItems( $data );
+        $this->getWriter()->saveItems($data);
+        $this->_items = array();
     }
 
 }
